@@ -45,6 +45,8 @@ void print_ascii(char c) { printf("%9c", c); }
 
 void print_hex(char c) { printf("%9x", c); }
 
+void print_oct(char c) { printf("%9o", c); }
+
 void print_dec(char c) { printf("%9d", c); }
 
 void print_bin(char c) { print_char_to_bin(c); }
@@ -70,10 +72,12 @@ void print_box(const char* input, int start, int chars_in_box,
 
     draw_content_row("ASCII", box_width_per_char, input, start, chars_in_box,
                      print_ascii);
-    draw_content_row("Hex", box_width_per_char, input, start, chars_in_box,
-                     print_hex);
     draw_content_row("Dec", box_width_per_char, input, start, chars_in_box,
                      print_dec);
+    draw_content_row("Hex", box_width_per_char, input, start, chars_in_box,
+                     print_hex);
+    draw_content_row("Oct", box_width_per_char, input, start, chars_in_box,
+                     print_oct);
     draw_content_row("Bin", box_width_per_char, input, start, chars_in_box,
                      print_bin);
 
