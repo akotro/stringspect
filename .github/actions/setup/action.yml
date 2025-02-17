@@ -1,0 +1,7 @@
+name: Setup
+description: Sets up the environment by checking out code and installing dependencies.
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Just
+      uses: extractions/setup-just@v2

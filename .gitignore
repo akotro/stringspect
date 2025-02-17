@@ -61,6 +61,7 @@ dkms.conf
 *
 !/**/
 !*.*
+
 # Cmake stuff
 CMakeLists.txt
 cmake/
@@ -74,3 +75,6 @@ compile_commands.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/zig
 # Edit at https://www.toptal.com/developers/gitignore?templates=zig
+
+# Include justfile
+!justfile
