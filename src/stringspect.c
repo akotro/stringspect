@@ -84,6 +84,7 @@ void print_box(const char* input, int start, int chars_in_box,
     draw_box_bot(current_box_width);
 }
 
+#ifndef UNIT_TEST
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         printf("No string input provided!\n");
@@ -116,3 +117,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+#endif

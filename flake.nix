@@ -4,32 +4,37 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    flake-utils,
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
 
-      stringspect = pkgs.stdenv.mkDerivation {
-        pname = "stringspect";
-        version = "1.0.0";
+        stringspect = pkgs.stdenv.mkDerivation {
+          pname = "stringspect";
+          version = "1.0.0";
 
-        src = ./.;
+          src = ./.;
 
-        nativeBuildInputs = [pkgs.stdenv.cc];
+          nativeBuildInputs = [ pkgs.stdenv.cc ];
 
-        buildPhase = ''
-          gcc -O3 -o stringspect stringspect.c
-        '';
+          buildPhase = ''
+            gcc -O3 -o stringspect stringspect.c
+          '';
 
-        installPhase = ''
-          mkdir -p $out/bin
-          cp stringspect $out/bin/
-        '';
-      };
-    in {
-      packages.default = stringspect;
-    });
+          installPhase = ''
+            mkdir -p $out/bin
+            cp stringspect $out/bin/
+          '';
+        };
+      in
+      {
+        packages.default = stringspect;
+      }
+    );
 }
