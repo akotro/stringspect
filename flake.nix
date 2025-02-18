@@ -24,7 +24,7 @@
           nativeBuildInputs = [ pkgs.stdenv.cc ];
 
           buildPhase = ''
-            gcc -O3 -o stringspect stringspect.c
+            gcc -Wall -O3 -o stringspect src/stringspect.c
           '';
 
           installPhase = ''
