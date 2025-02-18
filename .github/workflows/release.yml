@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        uses: ./.github/actions/setup
+
+      - name: Build project
+        id: build
+        run: |
+          just build
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            ARTIFACT_NAME="stringspect-${{ github.ref_name }}-linux"
+          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+            ARTIFACT_NAME="stringspect-${{ github.ref_name }}-macos"
+          fi
+          cp target/stringspect target/${ARTIFACT_NAME}
+          echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Upload artifact for ${{ matrix.os }}
+        uses: actions/upload-artifact@v4
+        with:
+          path: target/${{ env.ARTIFACT_NAME }}
+          name: ${{ env.ARTIFACT_NAME }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./release-artifacts
+          pattern: stringspect-*
+          merge-multiple: true
+
+      - name: Create Release
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "Release ${{ github.ref_name }}" \
+            --verify-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Assets
+        run: |
+          for file in $(find release-artifacts -type f); do
+            echo "Uploading $file"
+            gh release upload ${{ github.ref_name }} "$file" --clobber
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
